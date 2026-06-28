@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://brnhbg453kyp2"
+path="res://.godot/imported/test_shader_0.glsl-03fb59df823c784d2b505c06d7e04a5b.res"
+
+[deps]
+
+source_file="res://Cutulu.Godot/GPU/test_shader_0.glsl"
+dest_files=["res://.godot/imported/test_shader_0.glsl-03fb59df823c784d2b505c06d7e04a5b.res"]
+
+[params]
+
