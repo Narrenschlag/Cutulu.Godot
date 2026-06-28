@@ -8,6 +8,7 @@ namespace Cutulu.Audio
     public partial class AudioFile : AudioModule
     {
         [Export] public AudioStream File;
+
         [Export] public Vector2 Volume = Vector2.Zero;
         [Export] public Vector2 Pitch = Vector2.One;
 
