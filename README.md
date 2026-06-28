@@ -4,8 +4,8 @@ Inherting its name from the lovecraftian being Cthulhu, this SDK serves as found
 # Dependencies
 - Cutulu.Net (https://github.com/Narrenschlag/Cutulu.Net)
 
-## Installation
-### Option A
+### Installation
+**Option A**
 1. Download and locate the Cutulu.Net repository
 2. Add this to your own project's .csproj file in <Project>
 ```xml
@@ -19,7 +19,7 @@ Inherting its name from the lovecraftian being Cthulhu, this SDK serves as found
 </ItemGroup>
 ```
 
-### Option B
+**Option B**
 Just download Cutulu.Net and add it to the same project.
 
 # Why OpenSource
