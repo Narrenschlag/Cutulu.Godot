@@ -4,7 +4,10 @@ Inherting its name from the lovecraftian being Cthulhu, this SDK serves as found
 # Dependencies
 - Cutulu.Net (https://github.com/Narrenschlag/Cutulu.Net)
 
-### In your project csproj just add this:
+## Installation
+### Option A
+1. Download and locate the Cutulu.Net repository
+2. Add this to your own project's .csproj file in <Project>
 ```xml
 <ItemGroup>
   <ProjectReference Include="../.Net/Cutulu.Net/Cutulu.Net.csproj">   <<< Your Cutulu.Net project
@@ -15,6 +18,9 @@ Inherting its name from the lovecraftian being Cthulhu, this SDK serves as found
   </ProjectReference>
 </ItemGroup>
 ```
+
+### Option B
+Just download Cutulu.Net and add it to the same project.
 
 # Why OpenSource
 Sole purpose of this SDK is to improve overall software products and their production cycles by providing optimized and efficient code foundations to almost tailored extend without needing to learn complex algorithms, writing far too many lines of code or producing flaws in the code due to forgetting details.
