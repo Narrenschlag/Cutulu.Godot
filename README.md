@@ -12,7 +12,7 @@ This repository has to put directly into your godot project.
 2. Add this to your own project's .csproj file in <Project>
 ```xml
 <ItemGroup>
-  <ProjectReference Include="../.Net/Cutulu.Net/Cutulu.Net.csproj">   <<< Your Cutulu.Net project
+  <ProjectReference Include="../Cutulu.Net/Cutulu.Net.csproj">   <<< Your Cutulu.Net project
     <AdditionalProperties>
       IsGodotProject=true;                                            <<< Property that will enable Godot in Cutulu.Net
       GodotSharp=D:\Godot\GodotSharp                                  <<< Path to your GodotSharp directory
