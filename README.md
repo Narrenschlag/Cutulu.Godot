@@ -5,6 +5,8 @@ Inherting its name from the lovecraftian being Cthulhu, this SDK serves as found
 - Cutulu.Net (https://github.com/Narrenschlag/Cutulu.Net)
 
 ### Installation
+This repository has to put directly into your godot project.
+
 **Option A**
 1. Download and locate the Cutulu.Net repository
 2. Add this to your own project's .csproj file in <Project>
