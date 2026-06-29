@@ -6,6 +6,7 @@ Inherting its name from the lovecraftian being Cthulhu, this SDK serves as found
 
 ### Installation
 This repository has to be compiled with your godot project.
+We handle it this way as it provides you with the most flexibility and freedom to use Cutulu.Net in your project.
 
 **Option A**
 1. Download and locate the Cutulu.Net repository
