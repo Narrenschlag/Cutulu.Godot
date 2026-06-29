@@ -5,19 +5,16 @@ Inherting its name from the lovecraftian being Cthulhu, this SDK serves as found
 - Cutulu.Net (https://github.com/Narrenschlag/Cutulu.Net)
 
 ### Installation
-This repository has to put directly into your godot project.
+This repository has to be compiled with your godot project.
 
 **Option A**
 1. Download and locate the Cutulu.Net repository
 2. Add this to your own project's .csproj file in <Project>
 ```xml
 <ItemGroup>
-  <ProjectReference Include="../Cutulu.Net/Cutulu.Net.csproj">   <<< Your Cutulu.Net project
-    <AdditionalProperties>
-      IsGodotProject=true;                                            <<< Property that will enable Godot in Cutulu.Net
-      GodotSharp=D:\Godot\GodotSharp                                  <<< Path to your GodotSharp directory
-    </AdditionalProperties>
-  </ProjectReference>
+  <Compile Include="..\Cutulu\**\*.cs">                           <<< Replace ..\Cutulu with the path to your local Cutulu.Net repository
+    <Link>..\Shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
+  </Compile>
 </ItemGroup>
 ```
 
