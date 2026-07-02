@@ -5,6 +5,9 @@ namespace Cutulu.Core
 
     public static class Vector2Sorftf
     {
+        /// <summary>
+        /// Returns a sorted array of Vector2 by distance to the given position. Closer Vector2 will be first.
+        /// </summary>
         public static Vector2[] SortByDistanceTo(this Vector2[] array, Vector2 position)
         {
             for (int i = 1; i < array.Length; i++)
