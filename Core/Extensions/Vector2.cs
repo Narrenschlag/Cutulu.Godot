@@ -76,17 +76,17 @@ namespace Cutulu.Core
         }
 
         /// <summary>
-        /// Determines if two lines intersect and returns the intersection point.
+        /// Determines if two lines intersect and returns the intersection point. Does not limit the intersection to the line segments.
         /// </summary>
-        /// <param name="A">Origin of the first line.</param>
-        /// <param name="a">Direction of the first line.</param>
-        /// <param name="B">Origin of the second line.</param>
-        /// <param name="b">Direction of the second line.</param>
+        /// <param name="pivot">Origin of the first line.</param>
+        /// <param name="direction">Direction of the first line.</param>
+        /// <param name="pivotOther">Origin of the second line.</param>
+        /// <param name="directionOther">Direction of the second line.</param>
         /// <param name="intersection">Output intersection point if the lines intersect.</param>
         /// <returns>True if the lines intersect, otherwise false.</returns>
-        public static bool TryIntersect(this Vector2 A, Vector2 a, Vector2 B, Vector2 b, out Vector2 intersection)
+        public static bool TryIntersect(this Vector2 pivot, Vector2 direction, Vector2 pivotOther, Vector2 directionOther, out Vector2 intersection)
         {
-            float denominator = a.X * b.Y - a.Y * b.X;
+            float denominator = direction.X * directionOther.Y - direction.Y * directionOther.X;
             intersection = default;
 
             // Check if lines are parallel (denominator is zero)
@@ -95,9 +95,50 @@ namespace Cutulu.Core
                 return false;
             }
 
-            float t = ((B.X - A.X) * b.Y - (B.Y - A.Y) * b.X) / denominator;
+            float t = ((pivotOther.X - pivot.X) * directionOther.Y - (pivotOther.Y - pivot.Y) * directionOther.X) / denominator;
 
-            intersection = A + t * a;
+            intersection = pivot + t * direction;
+            return true;
+        }
+
+        /// <summary>
+        /// Determines if two line segments intersect and returns the intersection point.
+        /// Unlike TryIntersect, this treats the lines as bounded segments rather than infinite lines,
+        /// so the intersection point must lie within both segments' start and end points.
+        /// </summary>
+        /// <param name="from">Start point of the first segment.</param>
+        /// <param name="to">End point of the first segment.</param>
+        /// <param name="fromOther">Start point of the second segment.</param>
+        /// <param name="toOther">End point of the second segment.</param>
+        /// <param name="intersection">Output intersection point if the segments intersect.</param>
+        /// <returns>True if the segments intersect within their bounds, otherwise false.</returns>
+        public static bool TryIntersectLimited(this Vector2 from, Vector2 to, Vector2 fromOther, Vector2 toOther, out Vector2 intersection)
+        {
+            Vector2 a = to - from;
+            Vector2 b = toOther - fromOther;
+
+            intersection = default;
+
+            float denominator = a.X * b.Y - a.Y * b.X;
+
+            // Parallel (or collinear) lines
+            if (Mathf.Abs(denominator) < Mathf.Epsilon)
+            {
+                return false;
+            }
+
+            Vector2 diff = fromOther - from;
+
+            float t = (diff.X * b.Y - diff.Y * b.X) / denominator;
+            float u = (diff.X * a.Y - diff.Y * a.X) / denominator;
+
+            // Check that the intersection lies within both segments
+            if (t < 0f || t > 1f || u < 0f || u > 1f)
+            {
+                return false;
+            }
+
+            intersection = from + t * a;
             return true;
         }
 
