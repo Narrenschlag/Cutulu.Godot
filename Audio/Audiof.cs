@@ -4,97 +4,59 @@ namespace Cutulu.Audio
     using Godot;
     using Core;
 
-    public static partial class Audiof
+    public static class Audiof
     {
-        /// <summary>
-        /// Plays sound effect as child of given object. Node type defines the type of audio player.
-        /// <br/>Overwrite can be used for GlobalPosition overwrite.
-        /// </summary>
-        public static Node Play(Node parent, AudioModule module, string bus = "Master", object overwrite = default)
-        => Play(parent, module.GetInstance(), bus, overwrite);
+        public const string DEFAULT_BUS = "Master";
 
         /// <summary>
-        /// Plays sound effect as child of given object. Node type defines the type of audio player.
-        /// <br/>Overwrite can be used for GlobalPosition overwrite.
+        /// Plays audio module at given 3D global position.
         /// </summary>
-        public static Node Play(Node parent, AudioInstance instance, string bus = "Master", object overwrite = default)
+        public static Audio3D Play(AudioModule module, Node parent, Vector3 global, string bus = DEFAULT_BUS)
         {
-            if (instance.Stream.IsNull()) return null;
-            if (parent.IsNull()) return null;
+            var audio = Create<Audio3D>(parent, bus);
 
-            var loop = false;
+            audio.GlobalPosition = global;
+            audio.Enqueue(module);
 
-            switch (instance.Stream)
-            {
-                case AudioStreamOggVorbis ogg:
-                    loop = ogg.Loop;
-                    break;
+            return audio;
+        }
 
-                case AudioStreamMP3 mp3:
-                    loop = mp3.Loop;
-                    break;
+        /// <summary>
+        /// Plays audio module at given 2D global position.
+        /// </summary>
+        public static Audio2D Play(AudioModule module, Node parent, Vector2 global, string bus = DEFAULT_BUS)
+        {
+            var audio = Create<Audio2D>(parent, bus);
 
-                default:
-                    break;
-            }
+            audio.GlobalPosition = global;
+            audio.Enqueue(module);
 
-            Node n = null;
+            return audio;
+        }
 
-            switch (parent)
-            {
-                case Node3D node:
-                    var player3D = new AudioStreamPlayer3D()
-                    {
-                        PitchScale = instance.Pitch,
-                        VolumeDb = instance.Volume,
-                        Stream = instance.Stream,
+        /// <summary>
+        /// Plays audio module globally. 
+        /// </summary>
+        public static Audio1D Play(AudioModule module, Node parent, string bus = DEFAULT_BUS)
+        {
+            var audio = Create<Audio1D>(parent, bus);
 
-                        Bus = bus,
-                    };
+            audio.Enqueue(module);
 
-                    parent.AddChild(n = player3D);
+            return audio;
+        }
 
-                    player3D.GlobalPosition = overwrite is Vector3 v3 ? v3 : node.GlobalPosition;
-                    player3D.Play();
-                    break;
+        private static AUDIO Create<AUDIO>(Node parent, string bus) where AUDIO : Node, IAudio, new()
+        {
+            if (parent.IsNull()) throw new($"Cannot create audio instance. Parent cannot be null.");
+            if (bus.IsEmpty()) throw new($"Cannot create audio instance. Bus cannot be empty.");
 
-                case Node2D node:
-                    var player2D = new AudioStreamPlayer2D()
-                    {
-                        PitchScale = instance.Pitch,
-                        VolumeDb = instance.Volume,
-                        Stream = instance.Stream,
+            var audio = new AUDIO();
+            parent.AddChild(audio);
 
-                        Bus = bus,
-                    };
+            audio.Bus = bus;
 
-                    parent.AddChild(n = player2D);
-
-                    player2D.GlobalPosition = overwrite is Vector2 v2 ? v2 : node.GlobalPosition;
-                    player2D.Play();
-                    break;
-
-                default:
-                    var player = new AudioStreamPlayer()
-                    {
-                        PitchScale = instance.Pitch,
-                        VolumeDb = instance.Volume,
-                        Stream = instance.Stream,
-
-                        Bus = bus,
-                    };
-
-                    parent.AddChild(n = player);
-                    player.Play();
-                    break;
-            }
-
-            if (n.IsNull()) return null;
-
-            // Destroy after lifetime
-            if (loop == false) n.Destroy((float)instance.Stream.GetLength());
-
-            return n;
+            return audio;
         }
     }
 }

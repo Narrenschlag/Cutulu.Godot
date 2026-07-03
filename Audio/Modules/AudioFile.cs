@@ -1,30 +1,30 @@
 #if GODOT4_0_OR_GREATER
-namespace Cutulu.Audio
+namespace Cutulu.Audio;
+
+using Godot;
+using Core;
+
+[GlobalClass]
+public partial class AudioFile : AudioModule
 {
-    using Godot;
-    using Core;
+    [Export] public AudioStream File;
 
-    [GlobalClass]
-    public partial class AudioFile : AudioModule
+    /// <summary> Number of times to loop the file. Set to 0 to loop indefinitely. </summary>
+    [Export] public int LoopCount = 1;
+
+    [Export] public Vector2 Volume = Vector2.Zero;
+    [Export] public Vector2 Pitch = Vector2.One;
+
+    public override AudioStream GetStream(ushort idx, IAudio audio) => File;
+
+    public override bool HasIdx(ushort idx) => LoopCount < 1 || idx < LoopCount;
+
+    public override void _Apply(ushort idx, IAudio audio, StreamData data)
     {
-        [Export] public AudioStream File;
+        base._Apply(idx, audio, data);
 
-        [Export] public Vector2 Volume = Vector2.Zero;
-        [Export] public Vector2 Pitch = Vector2.One;
-
-        public override AudioInstance GetInstance()
-        {
-            return new()
-            {
-                Volume = GetVolume(),
-                Pitch = GetPitch(),
-                Stream = GetStream(),
-            };
-        }
-
-        public virtual float GetVolume() => Random.Range(Mathf.Min(Volume.X, Volume.Y), Mathf.Max(Volume.X, Volume.Y));
-        public virtual float GetPitch() => Mathf.Max(Random.Range(Mathf.Min(Pitch.X, Pitch.Y), Mathf.Max(Pitch.X, Pitch.Y)), 0.01f);
-        public virtual AudioStream GetStream() => File;
+        data.VolumeDb *= Random.Range(Mathf.Min(Volume.X, Volume.Y), Mathf.Max(Volume.X, Volume.Y));
+        data.Pitch *= Mathf.Max(Random.Range(Mathf.Min(Pitch.X, Pitch.Y), Mathf.Max(Pitch.X, Pitch.Y)), 0.01f);
     }
 }
 #endif

@@ -1,19 +1,27 @@
 #if GODOT4_0_OR_GREATER
 namespace Cutulu.Audio;
 
-using Cutulu.Lattice;
-
 using Godot;
 using Core;
 
 [GlobalClass]
-public partial class AudioAsset : AudioModule
+public partial class AudioChain : AudioModule
 {
-    [Export] public string StreamAsset;
+    [Export] public AudioModule[] Modules;
+    [Export] public bool Loop = false;
+
     [Export] public Vector2 Volume = Vector2.Zero;
     [Export] public Vector2 Pitch = Vector2.One;
 
-    public override AudioStream GetStream(ushort idx, IAudio audio) => AssetLoader.TryGet(StreamAsset, out AudioStream stream) ? stream : null;
+    public override bool TryGetSubModule(ushort idx, IAudio audio, out AudioModule subModule)
+    {
+        if (HasIdx(idx) == false) subModule = null;
+        else subModule = Modules[audio.Idx = (ushort)((int)idx).AbsMod(Modules.Length)];
+
+        return subModule.NotNull();
+    }
+
+    public override bool HasIdx(ushort idx) => Loop ? Modules.NotEmpty() : Modules.Size() > idx;
 
     public override void _Apply(ushort idx, IAudio audio, StreamData data)
     {

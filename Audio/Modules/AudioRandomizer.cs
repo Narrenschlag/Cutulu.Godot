@@ -1,32 +1,29 @@
 #if GODOT4_0_OR_GREATER
-namespace Cutulu.Audio
+namespace Cutulu.Audio;
+
+using Godot;
+using Core;
+
+[GlobalClass]
+public partial class AudioRandomizer : AudioModule
 {
-    using Godot;
-    using Core;
+    [Export] public AudioModule[] Modules;
 
-    [GlobalClass]
-    public partial class AudioRandomizer : AudioModule
+    [Export] public Vector2 Volume = Vector2.Zero;
+    [Export] public Vector2 Pitch = Vector2.One;
+
+    public override bool TryGetSubModule(ushort idx, IAudio audio, out AudioModule subModule)
     {
-        [Export] public AudioModule[] Modules;
+        subModule = Modules.RandomElement();
+        return subModule.NotNull();
+    }
 
-        [Export] public Vector2 Volume = Vector2.Zero;
-        [Export] public Vector2 Pitch = Vector2.One;
+    public override void _Apply(ushort idx, IAudio audio, StreamData data)
+    {
+        base._Apply(idx, audio, data);
 
-        public override AudioInstance GetInstance()
-        {
-            var instance = Modules.RandomElement().GetInstance();
-
-            if (instance.NotNull())
-            {
-                instance.Volume += GetVolume();
-                instance.Pitch += GetPitch() - 1.0f;
-            }
-
-            return instance;
-        }
-
-        public virtual float GetVolume() => Random.Range(Mathf.Min(Volume.X, Volume.Y), Mathf.Max(Volume.X, Volume.Y));
-        public virtual float GetPitch() => Mathf.Max(Random.Range(Mathf.Min(Pitch.X, Pitch.Y), Mathf.Max(Pitch.X, Pitch.Y)), 0.01f);
+        data.VolumeDb *= Random.Range(Mathf.Min(Volume.X, Volume.Y), Mathf.Max(Volume.X, Volume.Y));
+        data.Pitch *= Mathf.Max(Random.Range(Mathf.Min(Pitch.X, Pitch.Y), Mathf.Max(Pitch.X, Pitch.Y)), 0.01f);
     }
 }
 #endif
