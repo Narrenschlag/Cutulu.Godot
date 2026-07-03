@@ -12,7 +12,7 @@ namespace Cutulu.Audio
         {
             if (modules.IsEmpty()) return;
 
-            else if (Audio.Module.IsNull() && Audio.Queue.Count < 1)
+            else if (Audio.SourceModule.IsNull() && Audio.Queue.Count < 1)
             {
                 for (ushort i = 1; i < modules.Length; i++)
                     Audio.Queue.Enqueue(modules[i]);
@@ -25,17 +25,23 @@ namespace Cutulu.Audio
                 for (ushort i = 0; i < modules.Length; i++)
                     Audio.Queue.Enqueue(modules[i]);
 
-                if (Audio.Module.IsNull()) Next();
+                if (Audio.SourceModule.IsNull()) Next();
             }
         }
 
         public void Replace(AudioModule module)
         {
-            Audio.Module = module;
-            Audio.Idx = 0;
+            Audio.SourceModule = module;
 
-            if (module.NotNull()) Audio.Play();
-            else Audio.Stop();
+            // overwrite = module forces GetStreamData to resolve fresh (path = null),
+            // so Replace always restarts from index 0 at every depth - even when
+            // re-Replacing with the exact same module reference.
+            if (module.NotNull()) Audio.Play(0f, module);
+            else
+            {
+                Audio.ResetData();
+                Audio.Stop();
+            }
         }
 
         public void Next()
@@ -46,14 +52,9 @@ namespace Cutulu.Audio
             {
                 if (Audio.Queue.IsEmpty())
                 {
-                    if (Audio.Module.HasIdx(++Audio.Idx))
-                    {
-                        Audio.Play();
-                        Audio.HasFinished?.Invoke(old, old);
-                    }
+                    if (TryAdvance(old)) return;
 
-                    else Audio.HasFinished?.Invoke(old, null);
-
+                    Audio.HasFinished?.Invoke(old, null);
                     return;
                 }
             }
@@ -75,20 +76,31 @@ namespace Cutulu.Audio
                 }
             }
 
-            if (Audio.Module.NotNull())
-            {
-                if (Audio.Module.HasIdx(++Audio.Idx))
-                {
-                    Audio.Play();
-                    return;
-                }
+            if (TryAdvance(old)) return;
 
-                Audio.Module._Finished(this);
-            }
+            if (Audio.SourceModule.NotNull())
+                Audio.SourceModule._Finished(this);
 
             Replace(Audio.Queue.Count > 0 ? Audio.Queue.Dequeue() : null);
 
             Audio.HasFinished?.Invoke(old, Audio.Data);
+        }
+
+        /// <summary>
+        /// Tries to advance the current module tree to its next valid loop/chain
+        /// position, odometer-style (deepest level first, carrying up to shallower
+        /// levels when a level is exhausted). Returns false if the whole tree - all
+        /// the way up to OriginModule - is exhausted.
+        /// </summary>
+        private readonly bool TryAdvance(StreamData data)
+        {
+            if (data.IsNull() || data.OriginModule.IsNull()) return false;
+
+            var nextPath = AudioModule.Advance(data);
+            if (nextPath is null) return false;
+
+            Audio.PlayPath(data.OriginModule, nextPath, 0f);
+            return true;
         }
 
         public void ClearQueue()
@@ -99,19 +111,20 @@ namespace Cutulu.Audio
         public void Clear()
         {
             ClearQueue();
-            Audio.Module = null;
+            Audio.SourceModule = null;
+            Audio.ResetData();
             Audio.Stop();
         }
 
         public void Emit(object obj)
         {
-            if (Audio.Module.NotNull())
-                Audio.Module._Emited(this, obj);
+            if (Audio.SourceModule.NotNull())
+                Audio.SourceModule._Emited(this, obj);
         }
 
         public void Insert(AudioModule module, int index)
         {
-            if (Audio.Module.IsNull() && Audio.Queue.Count < 1)
+            if (Audio.SourceModule.IsNull() && Audio.Queue.Count < 1)
             {
                 Replace(module);
                 return;

@@ -16,7 +16,7 @@ public partial class AudioChain : AudioModule
     public override bool TryGetSubModule(ushort idx, IAudio audio, out AudioModule subModule)
     {
         if (HasIdx(idx) == false) subModule = null;
-        else subModule = Modules[audio.Idx = (ushort)((int)idx).AbsMod(Modules.Length)];
+        else subModule = Modules[((int)idx).AbsMod(Modules.Length)];
 
         return subModule.NotNull();
     }

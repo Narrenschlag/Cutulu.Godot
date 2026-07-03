@@ -11,16 +11,17 @@ public interface IAudio
     AudioModule.FINISH_MODE FinishMode { get; set; }
     public bool KeepAlive { get; set; }
 
-    public Queue<AudioModule> Queue { get; }
-    public StreamData Data { get; }
-    AudioModule Module { get; set; }
     AudioStream Stream { get; set; }
     float VolumeDb { get; set; }
     float Volume01 { get; set; }
     float Pitch { get; set; }
     float Time { get; set; }
     string Bus { get; set; }
-    ushort Idx { get; set; }
+
+    public Queue<AudioModule> Queue { get; }
+    AudioModule SourceModule { get; set; }
+    AudioModule Module { get; }
+    public StreamData Data { get; }
     float Length { get; }
 
     /// <summary>
@@ -61,7 +62,24 @@ public interface IAudio
     /// <summary>
     /// Play current module from the given time.
     /// </summary>
-    public void Play(float from = 0.0f);
+    public void Play(float from = -1f) => Play(from, null);
+
+    /// <summary>
+    /// Play current module from the given time. Overwrites the source module and
+    /// always resolves a fresh path (starts the tree over from index 0 at every depth).
+    /// </summary>
+    public void Play(float from, AudioModule overwrite);
+
+    /// <summary>
+    /// Plays the given module tree using an explicit per-depth resolution path.
+    /// Used internally to advance loops/chains without losing sibling state.
+    /// </summary>
+    public void PlayPath(AudioModule module, List<ushort> path, float from = 0f);
+
+    /// <summary>
+    /// Clears the current playback data without stopping or changing SourceModule.
+    /// </summary>
+    public void ResetData();
 
     /// <summary>
     /// Play next module in the queue. If the queue is empty this stops the player.

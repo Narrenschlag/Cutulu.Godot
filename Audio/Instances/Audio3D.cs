@@ -13,9 +13,9 @@ public partial class Audio3D : AudioStreamPlayer3D, IAudio
     public AudioModule.FINISH_MODE FinishMode { get; set; }
     public bool KeepAlive { get; set; }
 
+    public AudioModule Module { get => Data.NotNull() ? Data.Module : null; }
+    public AudioModule SourceModule { get; set; }
     public StreamData Data { get; private set; }
-    public AudioModule Module { get; set; }
-    public ushort Idx { get; set; }
 
     public float Length { get => Stream.NotNull() ? (float)Stream.GetLength() : 0f; }
     public float Volume01 { get => VolumeLinear; set => VolumeLinear = value; }
@@ -51,9 +51,25 @@ public partial class Audio3D : AudioStreamPlayer3D, IAudio
         Callable.From(Next).CallDeferred();
     }
 
-    public new void Play(float from = -1f)
+    public new void Play(float from = -1f) => Play(from, null);
+
+    public void Play(float from, AudioModule overwrite)
     {
-        Data = AudioModule.GetStreamData(Module, Idx, this);
+        var hasOverwrite = overwrite.NotNull();
+        var module = hasOverwrite ? overwrite : SourceModule;
+
+        // Resuming the same module tree (no overwrite) keeps its resolved path
+        // (current loop/chain position). Anything else starts fresh at index 0.
+        var path = !hasOverwrite && Data.NotNull() && Data.OriginModule == SourceModule
+            ? Data.Path
+            : null;
+
+        PlayPath(module, path, from >= 0f ? from : 0f);
+    }
+
+    public void PlayPath(AudioModule module, List<ushort> path, float from = 0f)
+    {
+        Data = AudioModule.GetStreamData(module, this, path);
         if (Data.IsNull())
         {
             Stop();
@@ -67,7 +83,7 @@ public partial class Audio3D : AudioStreamPlayer3D, IAudio
         Pitch = Data.Pitch;
 
         MaxDistance = Data.MaxDistance;
-        UnitSize = Data.UnitSize;
+        UnitSize = Data.UnitSize * Data.Pitch;
 
         if (Stream.IsNull())
         {
@@ -75,9 +91,11 @@ public partial class Audio3D : AudioStreamPlayer3D, IAudio
             return;
         }
 
-        _time = from >= 0f ? Mathf.Clamp(from, 0f, (float)Stream.GetLength()) : 0f;
+        _time = Mathf.Clamp(from, 0f, (float)Stream.GetLength());
         base.Play(_time);
     }
+
+    public void ResetData() => Data = null;
 
     public new void Stop()
     {
