@@ -61,7 +61,7 @@ namespace Cutulu.Core
             float angle = (Mathf.Atan2(direction.X, direction.Z) + Mathf.Pi * 2) % (Mathf.Pi * 2);
 
             // Convert the angle to degrees if needed
-            return useRadians ? angle : angle.toDegrees();
+            return useRadians ? angle : angle.ToDegrees();
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Cutulu.Core
             // Convert the angle to radians if needed
             if (useRadians)
             {
-                angle = angle.toRadians();
+                angle = angle.ToRadians();
             }
 
             // Calculate the direction using trigonometric functions
@@ -324,6 +324,35 @@ namespace Cutulu.Core
             return -direction.Cross(up).toXY().Angle();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 LerpAngle(this Vector3 a, Vector3 b, float t)
+        {
+            return new Vector3(
+                Mathf.LerpAngle(a.X, b.X, t),
+                Mathf.LerpAngle(a.Y, b.Y, t),
+                Mathf.LerpAngle(a.Z, b.Z, t)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 ToRadians(this Vector3 vector)
+        {
+            return new Vector3(
+                vector.X.ToRadians(),
+                vector.Y.ToRadians(),
+                vector.Z.ToRadians()
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 ToDegrees(this Vector3 vector)
+        {
+            return new Vector3(
+                vector.X.ToDegrees(),
+                vector.Y.ToDegrees(),
+                vector.Z.ToDegrees()
+            );
+        }
     }
 }
 #endif
