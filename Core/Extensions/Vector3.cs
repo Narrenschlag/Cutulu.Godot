@@ -309,19 +309,21 @@ namespace Cutulu.Core
             return sum;
         }
 
-        // <summary>
-        /// Converts a forward Vector3 direction into a Y-axis rotation in degrees.
+        /// <summary>
+        /// Convert a direction vector to radians.
         /// </summary>
-        /// <param name="forward">The forward vector.</param>
-        /// <returns>The Y-axis rotation (yaw) in degrees.</returns>
-        public static float ForwardToYRotation(this Vector3 forward)
-        {
-            // Normalize the forward vector to avoid errors with non-unit vectors
-            forward = forward.Normalized();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float DirectionToRadians(this Vector3 direction) => DirectionToRadians(direction, Vector3.Up);
 
-            // Calculate the yaw in radians
-            return Mathf.Atan2(forward.X, forward.Z);
+        /// <summary>
+        /// Convert a direction vector to radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float DirectionToRadians(this Vector3 direction, Vector3 up)
+        {
+            return -direction.Cross(up).toXY().Angle();
         }
+
     }
 }
 #endif
