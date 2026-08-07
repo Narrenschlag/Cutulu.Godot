@@ -39,6 +39,25 @@ namespace Cutulu.Core
 
         public static Vector3 toXZ(this Vector2 value, float y = 0) => new(value.X, y, value.Y);
 
+        /// <returns>Signed radians from anchor rotated by rad to target</returns>
+        public static float GetNetRadians(this Vector3 anchor, float rad, Vector3 target)
+        {
+            var _dir = (target - anchor).toXY().Normalized();
+            var _rad = -_dir.Angle() - Mathf.Pi * 0.5f - rad;
+
+            if (Mathf.Abs(_rad) > Mathf.Pi)
+                _rad -= Mathf.Sign(_rad) * Mathf.Pi * 2;
+
+            return _rad;
+        }
+
+        /// <returns>True if absolute value of rad is in threshold</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsRadInThreshold(this float rad, float threshold = Mathf.Pi)
+        {
+            return Mathf.Abs(rad) < threshold * 0.5f;
+        }
+
         /// <summary>
         /// Round Vector3 to given decimal spaces
         /// </summary>
