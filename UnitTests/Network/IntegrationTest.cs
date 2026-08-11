@@ -245,7 +245,7 @@ namespace Cutulu.Network
 
             await Task.Delay(500);
 
-            if (host.Connections.Count < 1)
+            if (host.GetConnectionCount() < 1)
             {
                 PrintErr($"Host did not establish any connections.\nHost Running: {host.IsListening}\nClient Connected: {client.IsConnected}");
                 return false;
@@ -308,7 +308,7 @@ namespace Cutulu.Network
             client.Received = (key, buffer) => lastReceivedClient = buffer.Decode<string>();
 
             await client.SendAsync(0, hostReference, false);
-            host.Send(0, clientReference, false, host.Connections.Values.ToArray()[^1]);
+            host.Send(0, clientReference, false, host.GetConnections().ToArray()[^1]);
 
             await Task.Delay(100);
 
@@ -350,13 +350,14 @@ namespace Cutulu.Network
 
             await Task.Delay(100);
 
-            if (host.Connections.Count != 1)
+            int count = host.GetConnectionCount();
+            if (count != 1)
             {
-                PrintErr($"Failed random test. Host connections {host.Connections.Count} != 1");
+                PrintErr($"Failed random test. Host connections {count} != 1");
                 return false;
             }
 
-            Print($"Random test completed. {host.Connections.Count} connections.");
+            Print($"Random test completed. {count} connections.");
 
             Print($"Starting reconnect test...");
 
@@ -370,9 +371,10 @@ namespace Cutulu.Network
 
             await Task.Delay(500);
 
-            if (host.Connections.Count != 1)
+            count = host.GetConnectionCount();
+            if (count != 1)
             {
-                PrintErr($"Failed reconnect test (1/2). Host connections {host.Connections.Count} != 1");
+                PrintErr($"Failed reconnect test (1/2). Host connections {count} != 1");
                 return false;
             }
 
@@ -380,13 +382,14 @@ namespace Cutulu.Network
 
             await Task.Delay(500);
 
-            if (host.Connections.Count != 0)
+            count = host.GetConnectionCount();
+            if (count != 0)
             {
-                PrintErr($"Failed reconnect test (2/2). Host connections {host.Connections.Count} != 0");
+                PrintErr($"Failed reconnect test (2/2). Host connections {count} != 0");
                 return false;
             }
 
-            Print($"Stress test completed. {host.Connections.Count} connections.");
+            Print($"Stress test completed. {count} connections.");
             NextStep();
 
             #endregion

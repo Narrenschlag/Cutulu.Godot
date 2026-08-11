@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b6xudgiblx81i"]
+
+[ext_resource type="Script" uid="uid://cwo34vdx63lyq" path="res://Cutulu.Godot/UnitTests/Network/IntegrationTest.cs" id="1_bc1jr"]
+
+[node name="IntegrationTest" type="Node" unique_id=1093267622]
+script = ExtResource("1_bc1jr")
