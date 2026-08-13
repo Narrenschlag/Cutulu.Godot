@@ -256,6 +256,7 @@ namespace Cutulu.Network
 
             #endregion
 
+            // 12
             #region Send and Receive tcp data between host and socket
 
             Print($"Sending tcp packets");
@@ -294,6 +295,7 @@ namespace Cutulu.Network
 
             #endregion
 
+            // 13
             #region Send and Receive udp data between host and socket
 
             Print($"Sending udp packets");
@@ -308,9 +310,9 @@ namespace Cutulu.Network
             client.Received = (key, buffer) => lastReceivedClient = buffer.Decode<string>();
 
             await client.SendAsync(0, hostReference, false);
-            host.Send(0, clientReference, false, host.GetConnections().ToArray()[^1]);
+            host.Send(0, clientReference, false, host.GetConnections()[^1]);
 
-            await Task.Delay(100);
+            await Task.Delay(300);
 
             if (lastReceivedClient != clientReference)
             {
