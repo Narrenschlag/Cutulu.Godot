@@ -2,6 +2,7 @@
 namespace Cutulu.Network;
 
 using Cutulu.Core;
+using System;
 using Godot;
 
 public partial class SharedSplitter3D : Node3D, ISharable
@@ -10,7 +11,7 @@ public partial class SharedSplitter3D : Node3D, ISharable
     [Export] public Node[] ClientExclusive { get; set; }
     [Export] public Node[] HostExclusive { get; set; }
 
-    public virtual T Unpack<T>(Node parent, bool asClient)
+    public virtual T Unpack<T>(Node parent, bool asClient, Action<Node> sharedChildren = null)
     {
         var array = asClient ? HostExclusive : ClientExclusive;
 

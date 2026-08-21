@@ -1,20 +1,20 @@
 #if GODOT4_0_OR_GREATER
-namespace Cutulu.Network
+namespace Cutulu.Network;
+
+using System;
+using Godot;
+
+public partial class SharedNode2D : Node2D, IShared
 {
-    using Godot;
+    [Export] public Node Client { get; set; }
+    [Export] public Node Host { get; set; }
 
-    public partial class SharedNode2D : Node2D, IShared
-    {
-        [Export] public Node Client { get; set; }
-        [Export] public Node Host { get; set; }
-        
-        [Export] public Node[] Shared { get; set; }
+    [Export] public Node[] Shared { get; set; }
 
-        public virtual T Unpack<T>(Node parent, bool asClient) => (this as IShared).DefaultSharedUnpackNode<T>(parent, asClient);
-                
-        public virtual void _Unpack(bool asClient) { }
+    public virtual T Unpack<T>(Node parent, bool asClient, Action<Node> sharedChildren = null) => (this as IShared).DefaultSharedUnpackNode<T>(parent, asClient, sharedChildren);
 
-        public bool DestroyAfterUnpacking() => true;
-    }
+    public virtual void _Unpack(bool asClient) { }
+
+    public bool DestroyAfterUnpacking() => true;
 }
 #endif

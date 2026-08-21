@@ -3,6 +3,7 @@ namespace Cutulu.Network
 {
     using Godot;
     using Core;
+    using System;
 
     public interface IShared : ISharable
     {
@@ -13,7 +14,7 @@ namespace Cutulu.Network
 
         public abstract void _Unpack(bool asClient);
 
-        public N DefaultSharedUnpackNode<N>(Node parent, bool asClient)
+        public N DefaultSharedUnpackNode<N>(Node parent, bool asClient, Action<Node> sharedChildren = null)
         {
             if (this is not Node godot || godot.IsNull()) return default;
 
@@ -38,7 +39,12 @@ namespace Cutulu.Network
                 if (Shared.NotEmpty())
                 {
                     foreach (var shared in Shared)
-                        _node.SetChild(shared);
+                    {
+                        if (shared is ISharable sharable) sharable.Unpack<Node>(_node, asClient);
+                        else _node.SetChild(shared);
+
+                        sharedChildren?.Invoke(shared);
+                    }
                 }
 
                 var children = _node.GetNodesInChildren<ISharable>(false, 2);
@@ -67,7 +73,7 @@ namespace Cutulu.Network
             return n;
         }
 
-        public static N Unpack<N>(PackedScene packed, Node parent, bool asClient)
+        public static N Unpack<N>(PackedScene packed, Node parent, bool asClient, Action<Node> sharedChildren = null)
         {
             if (packed.IsNull()) return default;
 
@@ -76,7 +82,7 @@ namespace Cutulu.Network
             if (_node is ISharable shared && _node.NotNull())
             {
                 //Debug.LogError($"Unpacking asset as typeof({typeof(N)}): {unpacked.NotNull()}"); //@{unpacked.GetParent().Name}");
-                return shared.Unpack<N>(parent, asClient);
+                return shared.Unpack<N>(parent, asClient, sharedChildren);
             }
 
             else if (_node is N n && _node.NotNull())
@@ -110,19 +116,19 @@ namespace Cutulu.Network
 
     public static class SharedNodeUtility
     {
-        public static N Unpack<N>(this PackedScene packed, Node parent, bool asClient)
+        public static N Unpack<N>(this PackedScene packed, Node parent, bool asClient, Action<Node> sharedChildren = null)
         {
-            return IShared.Unpack<N>(packed, parent, asClient);
+            return IShared.Unpack<N>(packed, parent, asClient, sharedChildren);
         }
 
-        public static N UnpackClient<N>(this PackedScene packed, Node parent)
+        public static N UnpackClient<N>(this PackedScene packed, Node parent, Action<Node> sharedChildren = null)
         {
-            return IShared.Unpack<N>(packed, parent, true);
+            return IShared.Unpack<N>(packed, parent, true, sharedChildren);
         }
 
-        public static N UnpackHost<N>(this PackedScene packed, Node parent)
+        public static N UnpackHost<N>(this PackedScene packed, Node parent, Action<Node> sharedChildren = null)
         {
-            return IShared.Unpack<N>(packed, parent, false);
+            return IShared.Unpack<N>(packed, parent, false, sharedChildren);
         }
     }
 }
