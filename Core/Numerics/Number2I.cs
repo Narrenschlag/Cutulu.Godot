@@ -41,14 +41,14 @@ namespace Cutulu.Core
                 }
             }
 
-            public override object Decode(System.IO.BinaryReader reader, System.Type type)
+            public override object Decode(Decoder.Marshal marshal, System.Type type)
             {
                 var vector = new Number2I() { Vector = new() { Numbers = new Number[2] } };
-                var byteCount = Number.ReadNumberId(reader.ReadByte());
+                var byteCount = Number.ReadNumberId(marshal.Reader.ReadByte());
 
                 for (byte i = 0; i < 2; i++)
                 {
-                    vector.Vector.Numbers[i] = new() { Buffer = reader.ReadBytes((int)byteCount[i]), };
+                    vector.Vector.Numbers[i] = new() { Buffer = marshal.Reader.ReadBytes((int)byteCount[i]), };
                 }
 
                 return vector;

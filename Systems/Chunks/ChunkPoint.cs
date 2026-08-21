@@ -45,9 +45,9 @@ public struct ChunkPoint(short x, short z)
             writer.Write(chunk.Z);
         }
 
-        public override object Decode(System.IO.BinaryReader reader, Type type)
+        public override object Decode(Core.Decoder.Marshal marshal, Type type)
         {
-            return new ChunkPoint(reader.ReadInt16(), reader.ReadInt16());
+            return new ChunkPoint(marshal.Reader.ReadInt16(), marshal.Reader.ReadInt16());
         }
     }
 }

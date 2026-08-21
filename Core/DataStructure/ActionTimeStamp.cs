@@ -41,13 +41,13 @@ public partial struct ActionTimeStamp
             writer.Write(t.Minute);
         }
 
-        public override object Decode(BinaryReader reader, Type type)
+        public override object Decode(Decoder.Marshal marshal, Type type)
         {
             return new ActionTimeStamp()
             {
-                MilliSecond = reader.ReadUInt16(),
-                Second = reader.ReadByte(),
-                Minute = reader.ReadUInt16(),
+                MilliSecond = marshal.Reader.ReadUInt16(),
+                Second = marshal.Reader.ReadByte(),
+                Minute = marshal.Reader.ReadUInt16(),
             };
         }
     }

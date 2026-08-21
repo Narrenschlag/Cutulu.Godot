@@ -177,9 +177,9 @@ namespace Cutulu.Core.UnitTest
                 writer.Write(obj.Z);
             }
 
-            public override object Decode(BinaryReader reader, Type type)
+            public override object Decode(Decoder.Marshal marshal, Type type)
             {
-                return new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                return new Vector3(marshal.Reader.ReadSingle(), marshal.Reader.ReadSingle(), marshal.Reader.ReadSingle());
             }
         }
     }

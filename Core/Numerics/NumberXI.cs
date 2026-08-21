@@ -73,17 +73,17 @@ namespace Cutulu.Core
                 }
             }
 
-            public override object Decode(System.IO.BinaryReader reader, System.Type type)
+            public override object Decode(Decoder.Marshal marshal, System.Type type)
             {
-                var bytes = reader.ReadByte();
-                var count = reader.ReadByte();
+                var bytes = marshal.Reader.ReadByte();
+                var count = marshal.Reader.ReadByte();
 
                 var vector = new NumberXI() { Numbers = new Number[count] };
                 for (var i = 0; i < count; i++)
                 {
                     vector.Numbers[i] = new()
                     {
-                        Buffer = reader.ReadBytes(bytes),
+                        Buffer = marshal.Reader.ReadBytes(bytes),
                     };
                 }
 

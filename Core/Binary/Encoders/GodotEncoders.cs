@@ -22,9 +22,9 @@ public static class GodotEncoders
             }
         }
 
-        public override object Decode(BinaryReader reader, Type type)
+        public override object Decode(Decoder.Marshal marshal, Type type)
         {
-            return new Vector3I(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+            return new Vector3I(marshal.Reader.ReadInt32(), marshal.Reader.ReadInt32(), marshal.Reader.ReadInt32());
         }
     }
 
@@ -39,9 +39,9 @@ public static class GodotEncoders
             }
         }
 
-        public override object Decode(BinaryReader reader, Type type)
+        public override object Decode(Decoder.Marshal marshal, Type type)
         {
-            return new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+            return new Vector3(marshal.Reader.ReadSingle(), marshal.Reader.ReadSingle(), marshal.Reader.ReadSingle());
         }
     }
     #endregion
@@ -58,9 +58,9 @@ public static class GodotEncoders
             }
         }
 
-        public override object Decode(BinaryReader reader, Type type)
+        public override object Decode(Decoder.Marshal marshal, Type type)
         {
-            return new Vector2I(reader.ReadInt32(), reader.ReadInt32());
+            return new Vector2I(marshal.Reader.ReadInt32(), marshal.Reader.ReadInt32());
         }
     }
 
@@ -75,9 +75,9 @@ public static class GodotEncoders
             }
         }
 
-        public override object Decode(BinaryReader reader, Type type)
+        public override object Decode(Decoder.Marshal marshal, Type type)
         {
-            return new Vector2(reader.ReadSingle(), reader.ReadSingle());
+            return new Vector2(marshal.Reader.ReadSingle(), marshal.Reader.ReadSingle());
         }
     }
     #endregion
@@ -93,9 +93,9 @@ public static class GodotEncoders
             }
         }
 
-        public override object Decode(BinaryReader reader, Type type)
+        public override object Decode(Decoder.Marshal marshal, Type type)
         {
-            return new Color(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+            return new Color(marshal.Reader.ReadSingle(), marshal.Reader.ReadSingle(), marshal.Reader.ReadSingle(), marshal.Reader.ReadSingle());
         }
     }
 }
