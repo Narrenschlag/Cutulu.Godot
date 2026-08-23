@@ -29,7 +29,7 @@ namespace Cutulu.Core
 
         class Encoder() : BinaryEncoder(typeof(Direction))
         {
-            public override void Encode(BinaryWriter writer, System.Type type, object value) => writer.Write(((Direction)value).Values);
+            public override void Encode(Core.Encoder.Marshal writer, System.Type type, object value) => writer.Writer.Write(((Direction)value).Values);
             public override object Decode(Decoder.Marshal marshal, System.Type type) => new Direction(marshal.Reader.ReadBytes(3));
         }
     }

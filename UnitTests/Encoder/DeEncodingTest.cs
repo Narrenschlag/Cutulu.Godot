@@ -168,13 +168,13 @@ namespace Cutulu.Core.UnitTest
 
         private class Vector3Encoder() : BinaryEncoder(typeof(Vector3))
         {
-            public override void Encode(BinaryWriter writer, Type type, object value)
+            public override void Encode(Encoder.Marshal writer, Type type, object value)
             {
                 var obj = (Vector3)value;
 
-                writer.Write(obj.X);
-                writer.Write(obj.Y);
-                writer.Write(obj.Z);
+                writer.Writer.Write(obj.X);
+                writer.Writer.Write(obj.Y);
+                writer.Writer.Write(obj.Z);
             }
 
             public override object Decode(Decoder.Marshal marshal, Type type)

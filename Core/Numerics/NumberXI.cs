@@ -60,16 +60,16 @@ namespace Cutulu.Core
 
         class Encoder() : BinaryEncoder(typeof(NumberXI))
         {
-            public override void Encode(System.IO.BinaryWriter writer, System.Type type, object value)
+            public override void Encode(Core.Encoder.Marshal writer, System.Type type, object value)
             {
                 var numbers = ((NumberXI)value).Numbers;
 
-                writer.Write((byte)numbers[0].Buffer.Length);
-                writer.Write((byte)numbers.Length);
+                writer.Writer.Write((byte)numbers[0].Buffer.Length);
+                writer.Writer.Write((byte)numbers.Length);
 
                 for (var i = 0; i < numbers.Length; i++)
                 {
-                    writer.Write(numbers[i].Buffer);
+                    writer.Writer.Write(numbers[i].Buffer);
                 }
             }
 

@@ -38,11 +38,11 @@ public struct ChunkPoint(short x, short z)
 
     class Encoder() : Core.BinaryEncoder(typeof(ChunkPoint))
     {
-        public override void Encode(System.IO.BinaryWriter writer, Type type, object value)
+        public override void Encode(Core.Encoder.Marshal writer, Type type, object value)
         {
             var chunk = (ChunkPoint)value;
-            writer.Write(chunk.X);
-            writer.Write(chunk.Z);
+            writer.Writer.Write(chunk.X);
+            writer.Writer.Write(chunk.Z);
         }
 
         public override object Decode(Core.Decoder.Marshal marshal, Type type)

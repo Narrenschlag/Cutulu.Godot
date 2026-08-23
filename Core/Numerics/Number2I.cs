@@ -26,18 +26,18 @@ namespace Cutulu.Core
 
         class VectorI2Encoder() : BinaryEncoder(typeof(Number2I))
         {
-            public override void Encode(System.IO.BinaryWriter writer, System.Type type, object value)
+            public override void Encode(Encoder.Marshal writer, System.Type type, object value)
             {
                 var numbers = ((Number2I)value).Vector.Numbers;
-                writer.Write(Number.GetNumberId(numbers));
+                writer.Writer.Write(Number.GetNumberId(numbers));
 
                 for (byte i = 0; i < 2; i++)
                 {
                     if (numbers.Length <= i)
-                        writer.Write(new byte[numbers[0].Buffer.Length]);
+                        writer.Writer.Write(new byte[numbers[0].Buffer.Length]);
 
                     else
-                        writer.Write(numbers[i].Buffer);
+                        writer.Writer.Write(numbers[i].Buffer);
                 }
             }
 

@@ -13,12 +13,12 @@ public static class GodotEncoders
     #region Vector3         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class Vector3IEncoder() : BinaryEncoder(typeof(Vector3I))
     {
-        public override void Encode(BinaryWriter writer, Type type, object value)
+        public override void Encode(Encoder.Marshal writer, Type type, object value)
         {
             Vector3I _ = (Vector3I)value;
             for (int i = 0; i < 3; i++)
             {
-                writer.Write(_[i]);
+                writer.Writer.Write(_[i]);
             }
         }
 
@@ -30,12 +30,12 @@ public static class GodotEncoders
 
     class Vector3Formatter() : BinaryEncoder(typeof(Vector3))
     {
-        public override void Encode(BinaryWriter writer, Type type, object value)
+        public override void Encode(Encoder.Marshal writer, Type type, object value)
         {
             var _ = (Vector3)value;
             for (int i = 0; i < 3; i++)
             {
-                writer.Write(_[i]);
+                writer.Writer.Write(_[i]);
             }
         }
 
@@ -49,12 +49,12 @@ public static class GodotEncoders
     #region Vector2         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class Vector2IFormatter() : BinaryEncoder(typeof(Vector2I))
     {
-        public override void Encode(BinaryWriter writer, Type type, object value)
+        public override void Encode(Encoder.Marshal writer, Type type, object value)
         {
             Vector2I _ = (Vector2I)value;
             for (int i = 0; i < 2; i++)
             {
-                writer.Write(_[i]);
+                writer.Writer.Write(_[i]);
             }
         }
 
@@ -66,12 +66,12 @@ public static class GodotEncoders
 
     class Vector2Formatter() : BinaryEncoder(typeof(Vector2))
     {
-        public override void Encode(BinaryWriter writer, Type type, object value)
+        public override void Encode(Encoder.Marshal writer, Type type, object value)
         {
             Vector2 _ = (Vector2)value;
             for (int i = 0; i < 2; i++)
             {
-                writer.Write(_[i]);
+                writer.Writer.Write(_[i]);
             }
         }
 
@@ -84,12 +84,12 @@ public static class GodotEncoders
 
     class ColorFormatter() : BinaryEncoder(typeof(Color))
     {
-        public override void Encode(BinaryWriter writer, Type type, object value)
+        public override void Encode(Encoder.Marshal writer, Type type, object value)
         {
             Color _ = (Color)value;
             for (int i = 0; i < 4; i++)
             {
-                writer.Write(_[i]);
+                writer.Writer.Write(_[i]);
             }
         }
 

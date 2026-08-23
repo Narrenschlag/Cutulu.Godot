@@ -1,7 +1,6 @@
 #if GODOT4_0_OR_GREATER
 namespace Cutulu.Core;
 
-using System.IO;
 using System;
 
 public partial struct ActionTimeStamp
@@ -32,13 +31,13 @@ public partial struct ActionTimeStamp
 
     class Encoder() : BinaryEncoder(typeof(ActionTimeStamp))
     {
-        public override void Encode(BinaryWriter writer, Type type, object value)
+        public override void Encode(Core.Encoder.Marshal writer, Type type, object value)
         {
             if (value is not ActionTimeStamp t) return;
 
-            writer.Write(t.MilliSecond);
-            writer.Write(t.Second);
-            writer.Write(t.Minute);
+            writer.Writer.Write(t.MilliSecond);
+            writer.Writer.Write(t.Second);
+            writer.Writer.Write(t.Minute);
         }
 
         public override object Decode(Decoder.Marshal marshal, Type type)
