@@ -57,6 +57,27 @@ namespace Cutulu.Core.UnitTest
                     var testClass1 = buff.Decode<TestClass0>() ?? throw new("testClass1 could not be decoded.");
 
                     Debug.Log($"'{testClass0.Name} ({testClass0.HealthPoints} hp)' => [{buff.Length} bytes] => '{testClass1.Name} ({testClass1.HealthPoints} hp)'");
+
+                    Debug.Log($"RandomStruct");
+                    var testStruct1 = new TestStruct1()
+                    {
+                        Id = new UNumber64(690096),
+                        Value = new UNumber16(69),
+                    };
+
+                    buff = testStruct1.Encode();
+
+                    Debug.Log($"Encoded {testStruct1.GetType().Name} into {buff.Length} bytes");
+
+                    if (buff.TryDecode(out TestStruct1 testStruct2) == false)
+                        throw new("TestStruct1 cannot be decoded: buff.TryDecode(out TestStruct1 testStruct2) failed");
+
+                    if (testStruct2.Id != testStruct1.Id || testStruct2.Value != testStruct1.Value)
+                        throw new($"TestStruct1 cannot be decoded: testStruct2.Id[{testStruct2.Id}] != testStruct1.Id[{testStruct1.Id}] || testStruct2.Value[{testStruct2.Value}] != testStruct1.Value[{testStruct1.Value}]");
+
+                    Debug.Log($"Ids: '{testStruct1.Id}' == '{testStruct2.Id}'");
+                    Debug.Log($"Values: '{testStruct1.Value}' == '{testStruct2.Value}'");
+
                     #endregion
 
                     #region Step 3
@@ -164,6 +185,12 @@ namespace Cutulu.Core.UnitTest
         {
             public string Name { get; set; }
             public int HealthPoints { get; set; }
+        }
+
+        private struct TestStruct1
+        {
+            [Encodable] public UNumber64 Id;
+            [Encodable] public UNumber16 Value;
         }
 
         private class Vector3Encoder() : BinaryEncoder(typeof(Vector3))

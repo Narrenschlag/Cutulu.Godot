@@ -2,6 +2,5 @@
 
 [ext_resource type="Script" uid="uid://bafdj00u2qyer" path="res://Cutulu.Godot/UnitTests/Encoder/DeEncodingTest.cs" id="1_17h0s"]
 
-
 [node name="DeEncoding" type="Node" unique_id=1300772951]
 script = ExtResource("1_17h0s")
