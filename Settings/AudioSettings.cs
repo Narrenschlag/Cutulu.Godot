@@ -24,7 +24,7 @@ namespace Cutulu.Settings
             SetOutputDevice(GetOutputDevice());
         }
 
-        public static readonly Dictionary<string, float> ChannelVolumes = new();
+        public static readonly Dictionary<string, float> ChannelVolumes = [];
 
         private static float masterVolume = 1.0f;
         public static float MasterVolume
@@ -73,6 +73,8 @@ namespace Cutulu.Settings
 
             return volume * (raw ? 1.0f : MasterVolume);
         }
+
+        public static string[] GetOutputDevices() => Godot.AudioServer.GetOutputDeviceList();
 
         public static void SetOutputDevice(string device)
         {
