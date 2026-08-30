@@ -26,7 +26,7 @@ namespace Cutulu.Network
 
             if (_node is not N n || _node.IsNull())
             {
-                Debug.LogR($"[color=orange]Failed to unpack shared asset for [i]{(asClient ? "Client" : "Host")}[/i]. Check your SharedAsset scene ({godot.Name}, {typeof(N).Name} != {(_node.NotNull() ? _node.GetType().Name : "<null>")}).[/color]");
+                Debug.LogR($"[color=orange]Failed to unpack shared asset for [i]{(asClient ? "Client" : "Host")}[/i]. Check your SharedAsset scene ({godot.Name}, desired<{typeof(N).Name}> != present<{(_node.NotNull() ? _node.GetType().Name : "<null>")}>).[/color]");
                 godot.Destroy();
                 return default;
             }
