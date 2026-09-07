@@ -76,6 +76,91 @@ public static class Physics
     }
     #endregion
 
+    #region Filtered Raycast Functions   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static bool RaycastFiltered(this Node3D node, Vector3 globalOrigin, Vector3 velocity, out RaycastHit hit, System.Func<Node3D, bool> filter, uint mask = 4294967295)
+    {
+        var hits = RaycastAll(node, globalOrigin, velocity.Normalized(), velocity.Length(), mask);
+
+        if (hits.NotEmpty())
+        {
+            foreach (var _hit in hits)
+            {
+                if (filter.Invoke(_hit.Collider as Node3D) == false) continue;
+
+                hit = _hit;
+                return true;
+            }
+        }
+
+        hit = default;
+        return false;
+    }
+
+    #endregion
+
+    #region All-Hit Raycast Functions   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static RaycastHit[] RaycastAll(this Node3D node, Vector3 globalOrigin, Vector3 direction, float maxDistance, uint mask = 4294967295, int maxHits = 32, System.Action<PhysicsRayQueryParameters3D> interceptionCallback = null)
+    {
+        direction = direction.Normalized();
+
+        var state = node.GetWorld3D().DirectSpaceState;
+        var hits = new System.Collections.Generic.List<RaycastHit>();
+        var exclude = new Array<Rid>();
+
+        var query = PhysicsRayQueryParameters3D.Create(globalOrigin, globalOrigin + direction * maxDistance, mask);
+        interceptionCallback?.Invoke(query);
+
+        query.CollideWithBodies = true;
+        query.CollideWithAreas = true;
+
+        for (int i = 0; i < maxHits; i++)
+        {
+            query.Exclude = exclude;
+
+            var result = state.IntersectRay(query);
+            if (result.Count < 1) break;
+
+            var hit = new RaycastHit(globalOrigin, result);
+            hits.Add(hit);
+
+            // Exclude this collider's RID so the next cast skips it and hits whatever is behind it
+            exclude.Add((Rid)result["rid"]);
+        }
+
+        return [.. hits];
+    }
+
+    public static RaycastHit2D[] RaycastAll2D(this Node2D node, Vector2 globalOrigin, Vector2 direction, float maxDistance, int maxHits = 32, System.Action<PhysicsRayQueryParameters2D> interceptionCallback = null)
+    {
+        direction = direction.Normalized();
+
+        var state = node.GetWorld2D().DirectSpaceState;
+        var hits = new System.Collections.Generic.List<RaycastHit2D>();
+        var exclude = new Array<Rid>();
+
+        var query = PhysicsRayQueryParameters2D.Create(globalOrigin, globalOrigin + direction * maxDistance);
+        interceptionCallback?.Invoke(query);
+
+        for (int i = 0; i < maxHits; i++)
+        {
+            query.Exclude = exclude;
+
+            var result = state.IntersectRay(query);
+            if (result.Count < 1) break;
+
+            var hit = new RaycastHit2D(globalOrigin, (Vector2)result["position"], (GodotObject)result["collider"], result);
+            hits.Add(hit);
+
+            exclude.Add((Rid)result["rid"]);
+        }
+
+        return [.. hits];
+    }
+
+    #endregion
+
     #region Curved Raycast Functions    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static bool RaycastCurve(Vector3 origin, Vector3 direction, out RaycastHit hit, Color color, float gravity, float resolution, float length)
         => Nodef.Main3D.RaycastCurve(origin, direction, out hit, color, gravity, resolution, length);
