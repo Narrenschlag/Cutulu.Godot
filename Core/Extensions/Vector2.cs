@@ -48,6 +48,8 @@ public static class Vector2f
     public static float GetAngleD(this Vector2 direction) => GetAngle(direction).toDegrees();
     public static float GetAngleD(this Vector2 direction, Vector2 from) => GetAngle(direction, from).toDegrees().AbsMod(360f);
 
+    public static float GetRotationAngle2D(this Vector2 direction) => -direction.AngleTo(Vector2.Up);
+
     /// <summary>
     /// Returns angle from Vector2.Right. In Radians.
     /// </summary>
