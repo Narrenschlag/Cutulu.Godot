@@ -9,7 +9,7 @@ namespace Cutulu.Core
 
         public override void _Process(double delta)
         {
-            RotationDegrees += (float)delta * Speed;
+            Rotation += new Vector3(Mathf.DegToRad(Speed.X), Mathf.DegToRad(Speed.Y), Mathf.DegToRad(Speed.Z)) * (float)delta;
         }
     }
 }
