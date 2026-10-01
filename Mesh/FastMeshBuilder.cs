@@ -10,14 +10,14 @@ using Godot;
 /// </summary>
 public class FastMeshBuilder
 {
-    private readonly Dictionary<int, int> PositionToIndex; // Use int hash instead of Vector3 key for much faster performance
+    protected readonly Dictionary<int, int> PositionToIndex; // Use int hash instead of Vector3 key for much faster performance
 
     public bool SmoothNormals { get; set; }
 
-    private SwapbackArray<Vector3> Vertices;
-    private SwapbackArray<Vector3> Normals;
-    private SwapbackArray<Color> Colors;
-    private SwapbackArray<int> Indices;
+    protected SwapbackArray<Vector3> Vertices;
+    protected SwapbackArray<Vector3> Normals;
+    protected SwapbackArray<Color> Colors;
+    protected SwapbackArray<int> Indices;
 
     /// <summary>
     /// Smooth normals is a bit slower, but it's worth it for better visuals. For larger meshes, it's recommended to enable it as smoothNormals merges vertices.
@@ -93,7 +93,7 @@ public class FastMeshBuilder
         return index;
     }
 
-    public void Clear()
+    public virtual void Clear()
     {
         Vertices = new(Vertices.Capacity);
         Normals = new(Normals.Capacity);
