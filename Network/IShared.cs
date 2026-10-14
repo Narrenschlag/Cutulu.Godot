@@ -94,7 +94,7 @@ namespace Cutulu.Network
 
             else
             {
-                Debug.LogError($"scene {packed.ResourcePath} couldn't be instantiated as typeof({typeof(N).Name}) as it is typeof({_node.GetType().Name})");
+                Debug.LogError($"scene {packed.ResourcePath} couldn't be instantiated as typeof({typeof(N).Name}) as it is typeof({_node.GetType().Name})['{_node.Name}']");
                 _node.Destroy();
                 return default;
             }
