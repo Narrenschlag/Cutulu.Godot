@@ -6,9 +6,14 @@ using Godot;
 using Core;
 
 [GlobalClass]
-public abstract partial class AudioModule : Resource
+public abstract partial class AudioModule : Resource, IAsset
 {
     [Export] public FINISH_MODE FinishMode = FINISH_MODE.DESTROY_IF_QUEUE_EMPTY;
+
+    [ExportGroup("Asset")]
+    [Export] public string AssetId { get; set; }
+    [Export] public bool Disabled { get; set; }
+    public ID_KEY RemoteUId { get; set; }
 
     public virtual AudioStream GetStream(ushort idx, IAudio audio) => null;
 
