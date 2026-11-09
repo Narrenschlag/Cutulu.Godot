@@ -1,8 +1,6 @@
 #if GODOT4_0_OR_GREATER
 namespace Cutulu.Audio;
 
-using Cutulu.Lattice;
-
 using Godot;
 using Core;
 
@@ -13,7 +11,7 @@ public partial class AudioAsset : AudioModule
     [Export] public Vector2 Volume = Vector2.Zero;
     [Export] public Vector2 Pitch = Vector2.One;
 
-    public override AudioStream GetStream(ushort idx, IAudio audio) => AssetLoader.TryGet(StreamAsset, out AudioStream stream) ? stream : null;
+    public override AudioStream GetStream(ushort idx, IAudio audio) => Assets.TryGetAsset(StreamAsset, out AudioStream stream) ? stream : null;
 
     public override void _Apply(ushort idx, IAudio audio, StreamData data)
     {

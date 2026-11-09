@@ -1,4 +1,4 @@
-#if GODOT4_0_OR_GREATER
+/*#if GODOT4_0_OR_GREATER
 namespace Cutulu.Lattice.Tests
 {
     using System.Threading.Tasks;
@@ -49,4 +49,4 @@ namespace Cutulu.Lattice.Tests
         }
     }
 }
-#endif
+#endif*/

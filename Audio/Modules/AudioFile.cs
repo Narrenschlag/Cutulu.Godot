@@ -5,7 +5,7 @@ using Godot;
 using Core;
 
 [GlobalClass]
-public partial class AudioFile : AudioModule, IAsset
+public partial class AudioFile : AudioModule
 {
     [Export] public AudioStream File;
 
