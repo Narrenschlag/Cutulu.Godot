@@ -6,6 +6,7 @@ using System.Text.Json;
 using System;
 using Godot;
 
+using Stopwatch = System.Diagnostics.Stopwatch;
 using Lock = System.Threading.Lock;
 
 /// <summary>
@@ -46,6 +47,7 @@ public static class Assets
         Loaded = 0;
 
         Debug.LogR($"[color=darkorange]Loading assets.");
+        var timer = Stopwatch.StartNew();
 
         foreach (var directory in assetDirectories)
         {
@@ -55,7 +57,8 @@ public static class Assets
             Debug.LogR($"[b]#[/b] [color=darkgreen]Loaded[/color] {directory}");
         }
 
-        Debug.LogR($"[color=seagreen]Loaded [b]{sum} asset(s)[/b].");
+        timer.Stop();
+        Debug.LogR($"[color=seagreen]Loaded [b]{sum} asset(s)[/b] in [color=gold]{timer.ElapsedMilliseconds}ms[/color].");
         IsLoading = false;
         return sum;
     }
@@ -282,7 +285,16 @@ public static class Assets
             if (Cache.Count < idx)
             {
                 oldValue = Cache[i];
+                if (oldValue is not null && ByType.TryGetValue(oldValue.GetType(), out var list))
+                    list.Remove(idx);
+
                 Cache[i] = newValue;
+                if (newValue is not null)
+                {
+                    if (ByType.TryGetValue(newValue.GetType(), out list) == false)
+                        ByType[newValue.GetType()] = list = [];
+                    list.Add(idx);
+                }
                 return true;
             }
         }
